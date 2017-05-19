@@ -178,6 +178,7 @@ namespace Xpirit.Cognitive.Assistant.ViewModel
 
         private async void FaceDetectionEffect_FaceDetected(FaceDetectionEffect sender, FaceDetectedEventArgs args)
         {       
+            
             Debug.WriteLine("face detected " + args.ResultFrame.DetectedFaces.Count().ToString());
             if (args.ResultFrame.DetectedFaces.Count() > 0)
             {
