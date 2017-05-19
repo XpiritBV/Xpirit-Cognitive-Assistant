@@ -37,9 +37,18 @@ namespace Xpirit.Cognitive.Assistant.Repository.Implementation
             TableResult result = await _table.ExecuteAsync(insertOrMergeOperation);
         }
 
-        public Task<Person> FindPerson(Guid id)
+        public async Task<Person> FindPerson(Guid id, Guid groupId)
         {
-            throw new NotImplementedException();
+            TableOperation retrieveOperation = TableOperation.Retrieve<PersonEntity>(groupId.ToString(), id.ToString());
+            TableResult result = await _table.ExecuteAsync(retrieveOperation);
+            PersonEntity person = result.Result as PersonEntity;
+
+            return new Person()
+            {
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                Id = new Guid(person.RowKey)
+            };
         }
 
         public Task<Group> GetGroup(Guid groupId)
