@@ -29,9 +29,12 @@ namespace Xpirit.Cognitive.Assistant.Services
                 FaceAttributeType.Gender, FaceAttributeType.HeadPose };
             var faces = await _faceClient.DetectAsync(image, returnFaceAttributes: attrs);
 
+            var persons = await _faceClient.IdentifyAsync("1b1c4d55-49f8-4f25-a939-c045dee9e879", faces.Select(f => f.FaceId).ToArray());
+
             List<string> personList = new List<string>();
-            foreach (var face in faces)
+            foreach (var person in persons)
             {
+                person.Candidates[0].PersonId 
                 personList.Add(face.FaceId.ToString());
             }
 

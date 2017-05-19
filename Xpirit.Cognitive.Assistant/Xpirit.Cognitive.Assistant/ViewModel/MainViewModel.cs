@@ -172,7 +172,7 @@ namespace Xpirit.Cognitive.Assistant.ViewModel
             // Add the effect to the preview stream
             _faceDetectionEffect = (FaceDetectionEffect)await _mediaCapture.AddVideoEffectAsync(definition, MediaStreamType.VideoPreview);
             _faceDetectionEffect.FaceDetected += FaceDetectionEffect_FaceDetected;
-            _faceDetectionEffect.DesiredDetectionInterval = TimeSpan.FromMilliseconds(500);
+            _faceDetectionEffect.DesiredDetectionInterval = TimeSpan.FromMilliseconds(1000);
             _faceDetectionEffect.Enabled = true;
         }
 
@@ -185,26 +185,32 @@ namespace Xpirit.Cognitive.Assistant.ViewModel
                 var stream = new InMemoryRandomAccessStream();
                 await _mediaCapture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreateJpeg(), stream);
 
-                //var pictures = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
-                //StorageFolder folder = pictures.SaveFolder;
+                var pictures = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+                StorageFolder folder = pictures.SaveFolder;
 
-                //var file = await folder.CreateFileAsync("SimplePhoto.jpg", CreationCollisionOption.GenerateUniqueName);
-                //using (var inputStream = stream)
-                //{
-                //    var decoder = await BitmapDecoder.CreateAsync(inputStream);
+                var guid = Guid.NewGuid();
+                var file = await folder.CreateFileAsync(guid+".jpg", CreationCollisionOption.GenerateUniqueName);
+                using (var inputStream = stream)
+                {
+                    var decoder = await BitmapDecoder.CreateAsync(inputStream);
 
-                //    using (var outputStream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                //    {
-                //        var encoder = await BitmapEncoder.CreateForTranscodingAsync(outputStream, decoder);
+                    using (var outputStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        var encoder = await BitmapEncoder.CreateForTranscodingAsync(outputStream, decoder);
 
-                //        //var properties = new BitmapPropertySet { { "System.Photo.Orientation", new BitmapTypedValue(photoOrientation, PropertyType.UInt16) } };
+                        //var properties = new BitmapPropertySet { { "System.Photo.Orientation", new BitmapTypedValue(photoOrientation, PropertyType.UInt16) } };
 
-                //        //await encoder.BitmapProperties.SetPropertiesAsync(properties);
-                //        await encoder.FlushAsync();
-                //    }
-                //}
+                        //await encoder.BitmapProperties.SetPropertiesAsync(properties);
+                        await encoder.FlushAsync();
+                    }   
+                }
 
-                var persons = await _faceRecognitionService.FindPersonsInImage(stream.AsStream());
+                var file2 = await folder.GetFileAsync(guid + ".jpg");
+                var s = await file2.OpenReadAsync();
+                var persons = await _faceRecognitionService.FindPersonsInImage(s.AsStream());
+                await file2.DeleteAsync();
+
+                //var persons = await _faceRecognitionService.FindPersonsInImage(stream.AsStream());
             }
 
         }
