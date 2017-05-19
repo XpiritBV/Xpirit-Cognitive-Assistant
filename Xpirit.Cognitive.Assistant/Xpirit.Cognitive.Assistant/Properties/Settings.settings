@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Xpirit.Cognitive.Assistant.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SettingsPanelVisibility" Type="System.Windows.Visibility" Scope="User">
+      <Value Profile="(Default)">Visible</Value>
+    </Setting>
+    <Setting Name="AnalysisInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:03</Value>
+    </Setting>
+    <Setting Name="FaceAPICallCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="EmotionAPICallCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="VisionAPICallCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AutoStopEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AutoStopTime" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:05:00</Value>
+    </Setting>
+    <Setting Name="FaceAPIKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">4c13288f56b347e2b5447293a9699744</Value>
+    </Setting>
+    <Setting Name="EmotionAPIKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5e5fa189b5c142599ed16dcae2470d5c</Value>
+    </Setting>
+    <Setting Name="VisionAPIKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">549079bc83b4419b8313acbc2c063f9c</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

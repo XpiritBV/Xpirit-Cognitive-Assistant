@@ -128,10 +128,10 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Connectionstrings.config">
+    <None Include="Connectionstrings.config">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Connectionstrings.config.template" />
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

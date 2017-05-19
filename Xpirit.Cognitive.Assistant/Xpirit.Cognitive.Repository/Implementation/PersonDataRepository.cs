@@ -76,9 +76,17 @@ namespace Xpirit.Cognitive.Assistant.Repository.Implementation
             throw new NotImplementedException();
         }
 
-        public Task RemoveGroup(Guid groupId)
+        public async Task RemoveGroup(Guid groupId)
         {
-            throw new NotImplementedException();
+            TableQuery<PersonEntity> partitionQuery = new TableQuery<PersonEntity>().Where(
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, groupId.ToString()));
+
+            TableBatchOperation batchOperation = new TableBatchOperation();
+            foreach (PersonEntity entity in _table.ExecuteQuery<PersonEntity>(partitionQuery))
+            {
+                batchOperation.Delete(entity);
+            }
+            await _table.ExecuteBatchAsync(batchOperation);
         }
 
         public Task RemovePerson(Guid id, Guid groupId)
