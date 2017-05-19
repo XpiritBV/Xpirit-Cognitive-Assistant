@@ -9,13 +9,13 @@ namespace Xpirit.Cognitive.Assistant.Repository.Interfaces
 {
     public interface IPersonData
     {
-        void AddPerson(string    firstName, string lastName, Guid id, Guid groupId);
-        Person FindPerson(Guid id);
-        Group GetGroup(Guid groupId);
-        Group GetGroup(string name);    
-        IEnumerable<Group> GetGroups();
-        IEnumerable<Guid> GetGroupGuids();
-        IEnumerable<string> GetGroupNames();
-        void RemovePerson(Guid id, Guid groupId);
+        Task AddPerson(string firstName, string lastName, Guid id, Guid groupId);
+        Task<Person> FindPerson(Guid id);
+        Task<Group> GetGroup(Guid groupId);
+        Task<Group> GetGroup(string name);
+        Task<IEnumerable<Group>> GetGroups();
+        Task<IEnumerable<Guid>> GetGroupGuids();
+        Task<IEnumerable<string>> GetGroupNames();
+        Task RemovePerson(Guid id, Guid groupId);
     }
 }

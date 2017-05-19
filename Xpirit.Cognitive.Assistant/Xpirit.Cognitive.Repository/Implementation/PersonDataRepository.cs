@@ -17,42 +17,42 @@ namespace Xpirit.Cognitive.Assistant.Repository.Implementation
             _account = CloudStorageAccount.Parse(storageConnectionString);
         }
 
-        public void AddPerson(string firstName, string lastName, Guid id, Guid groupId)
+        public Task AddPerson(string firstName, string lastName, Guid id, Guid groupId)
         {
             throw new NotImplementedException();
         }
 
-        public Person FindPerson(Guid id)
+        public Task<Person> FindPerson(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Group GetGroup(Guid groupId)
+        public Task<Group> GetGroup(Guid groupId)
         {
             throw new NotImplementedException();
         }
 
-        public Group GetGroup(string name)
+        public Task<Group> GetGroup(string name)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Guid> GetGroupGuids()
+        public Task<IEnumerable<Guid>> GetGroupGuids()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetGroupNames()
+        public Task<IEnumerable<string>> GetGroupNames()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Group> GetGroups()
+        public Task<IEnumerable<Group>> GetGroups()
         {
             throw new NotImplementedException();
         }
 
-        public void RemovePerson(Guid id, Guid groupId)
+        public Task RemovePerson(Guid id, Guid groupId)
         {
             throw new NotImplementedException();
         }
