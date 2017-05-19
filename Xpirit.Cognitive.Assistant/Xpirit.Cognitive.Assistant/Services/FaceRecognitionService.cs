@@ -34,8 +34,10 @@ namespace Xpirit.Cognitive.Assistant.Services
             List<string> personList = new List<string>();
             foreach (var person in persons)
             {
-                person.Candidates[0].PersonId 
-                personList.Add(face.FaceId.ToString());
+                Repository.Implementation.PersonDataRepository rep = new Repository.Implementation.PersonDataRepository(STORAGE_CONNECTIONSTRING);
+                var result = await rep.FindPerson(person.Candidates[0], "1b1c4d55-49f8-4f25-a939-c045dee9e879");
+                //person.Candidates[0].PersonId 
+                //personList.Add(face.FaceId.ToString());
             }
 
             return personList;
