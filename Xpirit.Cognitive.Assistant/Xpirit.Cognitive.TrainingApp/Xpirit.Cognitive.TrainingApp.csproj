@@ -131,6 +131,7 @@
     <Content Include="Connectionstrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Connectionstrings.config.template" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
