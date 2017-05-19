@@ -17,5 +17,6 @@ namespace Xpirit.Cognitive.Assistant.Repository.Interfaces
         Task<IEnumerable<Guid>> GetGroupGuids();
         Task<IEnumerable<string>> GetGroupNames();
         Task RemovePerson(Guid id, Guid groupId);
+        Task RemoveGroup(Guid groupId);
     }
 }

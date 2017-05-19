@@ -67,6 +67,11 @@ namespace Xpirit.Cognitive.Assistant.Repository.Implementation
             throw new NotImplementedException();
         }
 
+        public Task RemoveGroup(Guid groupId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task RemovePerson(Guid id, Guid groupId)
         {
             throw new NotImplementedException();

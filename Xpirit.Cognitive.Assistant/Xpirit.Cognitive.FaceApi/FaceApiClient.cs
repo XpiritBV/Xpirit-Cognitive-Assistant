@@ -9,17 +9,21 @@ using System.IO;
 
 using ClientContract = Microsoft.ProjectOxford.Face.Contract;
 using System.Diagnostics;
+using Xpirit.Cognitive.Assistant.Repository.Interfaces;
+using Xpirit.Cognitive.Assistant.Repository.Implementation;
 
 namespace Xpirit.Cognitive.FaceApi
 {
     public class FaceApiClient
     {
         private FaceServiceClient _client;
+        private IPersonData _repository;
 
         public FaceApiClient(string subscriptionKey)
         {
             string apiEndPoint = ConfigurationManager.AppSettings["FaceApiUrl"];
             _client = new FaceServiceClient(subscriptionKey, apiEndPoint);
+            _repository = new PersonDataRepository(ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString);
         }
 
         /// <summary>
@@ -57,10 +61,15 @@ namespace Xpirit.Cognitive.FaceApi
             //Delete from FaceServiceClient
             await _client.DeletePersonGroupAsync(groupName.ToString());
 
-            //Delete from repository
-
+            //Delete from repository - to be implemented
+            await _repository.RemoveGroup(groupName);
         }
 
+        /// <summary>
+        /// Creates a group
+        /// </summary>
+        /// <param name="groupName">The name of the group</param>
+        /// <returns></returns>
         public async Task CreatePersonGroupAsync(Guid groupName)
         {
             //Create in FaceServiceClient
@@ -74,10 +83,6 @@ namespace Xpirit.Cognitive.FaceApi
                 Debug.WriteLine("Response: {0}. {1}", ex.ErrorCode, ex.ErrorMessage);
                 throw new Exception($"Error creating group: \"{ex.ErrorCode}. {ex.ErrorMessage}\"");
             }
-
-
-            //Create in repository
-
         }
 
         /// <summary>
@@ -92,6 +97,8 @@ namespace Xpirit.Cognitive.FaceApi
             Guid personId = (await _client.CreatePersonAsync(groupName.ToString(), personName)).PersonId;
 
             //Create person in repository
+            Name n = new Name(personName);
+            await _repository.AddPerson(n.FirstName, n.LastName, personId, groupName, "Xpirit");
 
             return personId;
         }
