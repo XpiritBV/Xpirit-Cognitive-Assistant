@@ -10,6 +10,7 @@ namespace Xpirit.Cognitive.Repository.Internals
 {
     public class PersonEntity : TableEntity
     {
+        public PersonEntity() { }
         public PersonEntity(Guid id, Guid groupId)
         {
             PartitionKey = groupId.ToString();
