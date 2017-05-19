@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System    ;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace Xpirit.Cognitive.Assistant.Repository.Interfaces
 {
     public interface IPersonData
     {
-        Task AddPerson(string firstName, string lastName, Guid id, Guid groupId);
+        Task AddPerson(string firstName, string lastName, Guid id, Guid groupId, string groupName);
         Task<Person> FindPerson(Guid id);
         Task<Group> GetGroup(Guid groupId);
         Task<Group> GetGroup(string name);

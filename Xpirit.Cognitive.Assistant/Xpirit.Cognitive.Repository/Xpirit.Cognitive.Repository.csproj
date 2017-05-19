@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Implementation\PersonDataRepository.cs" />
     <Compile Include="Interfaces\IPersonData.cs" />
+    <Compile Include="Internals\PersonEntity.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
