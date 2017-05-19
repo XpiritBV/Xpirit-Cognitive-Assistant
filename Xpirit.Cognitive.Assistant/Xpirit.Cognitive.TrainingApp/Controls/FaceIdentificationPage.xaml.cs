@@ -48,6 +48,7 @@ using System.Windows.Controls;
 using ClientContract = Microsoft.ProjectOxford.Face.Contract;
 using System.Windows.Media;
 using System.Configuration;
+using Xpirit.Cognitive.FaceApi;
 
 namespace Microsoft.ProjectOxford.Face.Controls
 {
@@ -66,7 +67,7 @@ namespace Microsoft.ProjectOxford.Face.Controls
         /// <summary>
         /// Temporary group name for create person database
         /// </summary>
-        public static readonly string SampleGroupName = "1b1c4d55-49f8-4f25-a939-c045dee9e879"; // Guid.NewGuid().ToString();
+        public static readonly Guid SampleGroupName = Guid.Parse("1b1c4d55-49f8-4f25-a939-c045dee9e879"); // Guid.NewGuid().ToString();
 
         /// <summary>
         /// Faces to identify
@@ -133,7 +134,7 @@ namespace Microsoft.ProjectOxford.Face.Controls
         /// <summary>
         /// Gets group name
         /// </summary>
-        public string GroupName
+        public Guid GroupName
         {
             get
             {
@@ -207,41 +208,20 @@ namespace Microsoft.ProjectOxford.Face.Controls
         /// <param name="e">Event argument</param>
         private async void FolderPicker_Click(object sender, RoutedEventArgs e)
         {
-            bool groupExists = false;
+            
 
             MainWindow mainWindow = Window.GetWindow(this) as MainWindow;
             string subscriptionKey = mainWindow._scenariosControl.SubscriptionKey;
 
-            var faceServiceClient = new FaceServiceClient(subscriptionKey, ConfigurationManager.AppSettings["FaceApiUrl"]);
-
-            // Test whether the group already exists
-            try
-            {
-                MainWindow.Log("Request: Group {0} will be used to build a person database. Checking whether the group exists.", GroupName);
-
-                await faceServiceClient.GetPersonGroupAsync(GroupName);
-                groupExists = true;
-                MainWindow.Log("Response: Group {0} exists.", GroupName);
-            }
-            catch (FaceAPIException ex)
-            {
-                if (ex.ErrorCode != "PersonGroupNotFound")
-                {
-                    MainWindow.Log("Response: {0}. {1}", ex.ErrorCode, ex.ErrorMessage);
-                    return;
-                }
-                else
-                {
-                    MainWindow.Log("Response: Group {0} did not exist previously.", GroupName);
-                }
-            }
-
+            var faceApiClient = new FaceApiClient(subscriptionKey);
+            bool groupExists = await faceApiClient.PersonGroupExistsAsync(GroupName);
+            
             if (groupExists)
             {
                 var cleanGroup = System.Windows.MessageBox.Show(string.Format("Requires a clean up for group \"{0}\" before setting up a new person database. Click OK to proceed, group \"{0}\" will be cleared.", GroupName), "Warning", MessageBoxButton.OKCancel);
                 if (cleanGroup == MessageBoxResult.OK)
                 {
-                    await faceServiceClient.DeletePersonGroupAsync(GroupName);
+                    await faceApiClient.DeletePersonGroupAsync(GroupName);
                 }
                 else
                 {
@@ -271,12 +251,12 @@ namespace Microsoft.ProjectOxford.Face.Controls
                 MainWindow.Log("Request: Creating group \"{0}\"", GroupName);
                 try
                 {
-                    await faceServiceClient.CreatePersonGroupAsync(GroupName, GroupName);
+                    await faceApiClient.CreatePersonGroupAsync(GroupName);
                     MainWindow.Log("Response: Success. Group \"{0}\" created", GroupName);
                 }
-                catch (FaceAPIException ex)
+                catch (Exception ex)
                 {
-                    MainWindow.Log("Response: {0}. {1}", ex.ErrorCode, ex.ErrorMessage);
+                    MainWindow.Log("Response: {0}", ex.Message);
                     return;
                 }
 
@@ -300,7 +280,7 @@ namespace Microsoft.ProjectOxford.Face.Controls
                     // Call create person REST API, the new create person id will be returned
                     MainWindow.Log("Request: Creating person \"{0}\"", p.PersonName);
                     // await Task.Delay(5000);
-                    p.PersonId = (await faceServiceClient.CreatePersonAsync(GroupName, p.PersonName)).PersonId.ToString();
+                    p.PersonId = (await faceApiClient.CreatePersonAsync(GroupName, p.PersonName)).ToString();
                     MainWindow.Log("Response: Success. Person \"{0}\" (PersonID:{1}) created", p.PersonName, p.PersonId);
 
                     string img;
@@ -322,8 +302,7 @@ namespace Microsoft.ProjectOxford.Face.Controls
                                     try
                                     {
                                         // Update person faces on server side
-                                        var persistFace = await faceServiceClient.AddPersonFaceAsync(GroupName, Guid.Parse(p.PersonId), fStream, imgPath);
-                                        return new Tuple<string, ClientContract.AddPersistedFaceResult>(imgPath, persistFace);
+                                        return await faceApiClient.AddPersonFaceAsync(GroupName, Guid.Parse(p.PersonId), fStream, imgPath);
                                     }
                                     catch (FaceAPIException ex)
                                     {
@@ -397,13 +376,13 @@ namespace Microsoft.ProjectOxford.Face.Controls
                 {
                     // Start train person group
                     MainWindow.Log("Request: Training group \"{0}\"", GroupName);
-                    await faceServiceClient.TrainPersonGroupAsync(GroupName);
+                    await faceApiClient.TrainPersonGroupAsync(GroupName);
 
                     // Wait until train completed
                     while (true)
                     {
                         await Task.Delay(1000);
-                        var status = await faceServiceClient.GetPersonGroupTrainingStatusAsync(GroupName);
+                        var status = await faceApiClient.GetPersonGroupTrainingStatusAsync(GroupName);
                         MainWindow.Log("Response: {0}. Group \"{1}\" training process is {2}", "Success", GroupName, status.Status);
                         if (status.Status != Contract.Status.Running)
                         {
@@ -483,7 +462,7 @@ namespace Microsoft.ProjectOxford.Face.Controls
 
                         // Identify each face
                         // Call identify REST API, the result contains identified person information
-                        var identifyResult = await faceServiceClient.IdentifyAsync(GroupName, faces.Select(ff => ff.FaceId).ToArray());
+                        var identifyResult = await faceServiceClient.IdentifyAsync(GroupName.ToString(), faces.Select(ff => ff.FaceId).ToArray());
                         for (int idx = 0; idx < faces.Length; idx++)
                         {
                             // Update identification result for rendering
