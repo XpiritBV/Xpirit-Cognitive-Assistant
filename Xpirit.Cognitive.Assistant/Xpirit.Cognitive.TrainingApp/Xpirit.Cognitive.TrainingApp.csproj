@@ -152,6 +152,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Xpirit.Cognitive.FaceApi\Xpirit.Cognitive.FaceApi.csproj">
+      <Project>{958278AD-F57D-485D-8BBF-7AC3870189AE}</Project>
+      <Name>Xpirit.Cognitive.FaceApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xpirit.Cognitive.UIControls\Xpirit.Cognitive.UIControls.csproj">
       <Project>{735929f0-f8f1-4d93-b027-5d034fa7892b}</Project>
       <Name>Xpirit.Cognitive.UIControls</Name>
