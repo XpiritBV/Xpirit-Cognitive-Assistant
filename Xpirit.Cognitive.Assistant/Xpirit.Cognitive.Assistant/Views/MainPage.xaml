@@ -18,5 +18,6 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ContentControl HorizontalAlignment="Left"         
           Content="{Binding CaptureElement}"/>
+        <TextBlock Text="{Binding HelloText}" FontSize="40" Foreground="Orange" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
     </Grid>
 </Page>

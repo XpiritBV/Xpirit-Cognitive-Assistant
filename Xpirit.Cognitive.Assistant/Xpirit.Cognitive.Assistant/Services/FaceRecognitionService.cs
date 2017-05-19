@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xpirit.Cognitive.Assistant.Repository.Implementation;
+using Xpirit.Cognitive.Assistant.Repository.Model;
 
 namespace Xpirit.Cognitive.Assistant.Services
 {
@@ -24,7 +25,7 @@ namespace Xpirit.Cognitive.Assistant.Services
             _visionClient = new VisionServiceClient(ApiKeys.VISION_API_KEY, "https://westeurope.api.cognitive.microsoft.com/vision/v1.0");
         }
 
-        public async Task<List<string>> FindPersonsInImage(Stream image)
+        public async Task<List<Person>> FindPersonsInImage(Stream image)
         {
             var attrs = new List<FaceAttributeType> { FaceAttributeType.Age,
                 FaceAttributeType.Gender, FaceAttributeType.HeadPose };
@@ -32,13 +33,15 @@ namespace Xpirit.Cognitive.Assistant.Services
 
             var persons = await _faceClient.IdentifyAsync("1b1c4d55-49f8-4f25-a939-c045dee9e879", faces.Select(f => f.FaceId).ToArray());
 
-            List<string> personList = new List<string>();
+            List<Person> personList = new List<Person>();
             foreach (var person in persons)
             {
                 PersonDataRepository rep = new PersonDataRepository(ApiKeys.STORAGEKEY);
-                var result = await rep.FindPerson(person.Candidates[0].PersonId, new Guid("1b1c4d55-49f8-4f25-a939-c045dee9e879"));
-                //person.Candidates[0].PersonId 
-                //personList.Add(face.FaceId.ToString());
+                if (person.Candidates != null && person.Candidates.Count() > 0)
+                {
+                    var result = await rep.FindPerson(person.Candidates[0].PersonId, new Guid("1b1c4d55-49f8-4f25-a939-c045dee9e879"));
+                    personList.Add(result);
+                }
             }
 
             return personList;

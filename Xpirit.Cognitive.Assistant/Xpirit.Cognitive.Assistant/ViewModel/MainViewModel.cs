@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -74,6 +75,36 @@ namespace Xpirit.Cognitive.Assistant.ViewModel
             set
             {
                 Set(() => CaptureElement, ref _captureElement, value);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="HelloText" /> property's name.
+        /// </summary>
+        public const string HelloTextPropertyName = "HelloText";
+
+        private string _helloText = "";
+
+        /// <summary>
+        /// Sets and gets the HelloText property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string HelloText
+        {
+            get
+            {
+                return _helloText;
+            }
+
+            set
+            {
+                if (_helloText == value)
+                {
+                    return;
+                }
+
+                _helloText = value;
+                RaisePropertyChanged(HelloTextPropertyName);
             }
         }
 
@@ -208,7 +239,26 @@ namespace Xpirit.Cognitive.Assistant.ViewModel
                 var file2 = await folder.GetFileAsync(guid + ".jpg");
                 var s = await file2.OpenReadAsync();
                 var persons = await _faceRecognitionService.FindPersonsInImage(s.AsStream());
+
+                string text = "";
+                if (persons.Count() > 0)
+                {
+                    text = "Hello ";
+                }
+                foreach (var p in persons)
+                {
+                    text += p.FirstName + " ";
+                }
+                Debug.WriteLine(text);
                 await file2.DeleteAsync();
+
+
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    HelloText = text;
+                });
+
 
                 //var persons = await _faceRecognitionService.FindPersonsInImage(stream.AsStream());
             }
