@@ -136,6 +136,12 @@
   <ItemGroup>
     <Folder Include="Model\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xpirit.Cognitive.PersonRepository\Xpirit.Cognitive.PersonRepository.csproj">
+      <Project>{a5b0adc9-95df-4ded-9197-04c27a729a71}</Project>
+      <Name>Xpirit.Cognitive.PersonRepository</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
